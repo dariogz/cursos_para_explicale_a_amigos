@@ -1,0 +1,95 @@
+<html>
+    <head>
+        <title>Agencia La Plaza</title>
+    </head>
+    <body>
+        <h1>Cargue su jugada</h1>
+        <form>
+            <label>Nombre: <input type="text" id="inputNombre"></label><br>
+            <label>Monto: <input type="number" id="inputMonto"></label><br>
+            <label>Numero: <input type="number" id="inputNumero"></label><br>
+            <button id="htmlBotonCargarJugada">Cargar</button>
+        </form>
+        <hr>
+        <h1>Jugadas</h1>
+        <table>
+            <thead>
+                <td><b>Jugador</b></td>
+                <td><b>Monto</b></td>
+                <td><b>Numero</b></td>
+            </thead>
+            <tbody id="jugadas"></tbody>
+        </table>
+
+        <script>
+            // Variables
+            let baseDeDatosDeBalance = {};
+            let baseDeDatosDeJugadas = {};
+
+            let realizarJugada = function(jugador, monto, numero) {
+                // Agregar jugada al balance
+                if (!baseDeDatosDeBalance[jugador]) {
+                    baseDeDatosDeBalance[jugador] = 0;
+                }
+                baseDeDatosDeBalance[jugador] += monto;
+
+                // Agregar jugada al registro
+                if (baseDeDatosDeJugadas[numero] === undefined) {
+                    baseDeDatosDeJugadas[numero] = new Array;
+                }
+                baseDeDatosDeJugadas[numero].push({
+                    jugador,
+                    monto
+                });
+            }
+
+            // Referencias de HTML
+            let botonCargarJugada = document.getElementById('htmlBotonCargarJugada');
+            let nombreFormulario = document.getElementById('inputNombre');
+            let montoFormulario = document.getElementById('inputMonto');
+            let numeroFormulario = document.getElementById('inputNumero');
+            let tablaJugadas = document.getElementById('jugadas');
+
+            const dibujarJugadas = function() {
+                // Limpio tabla
+                tablaJugadas.innerHTML = '';
+
+                // Por cada numero
+                for (const numero in baseDeDatosDeJugadas) {
+                    // Por cada jugada
+                    for (const nroJugada in baseDeDatosDeJugadas[numero]) {
+                        const jugada = baseDeDatosDeJugadas[numero][nroJugada];
+                        tablaJugadas.innerHTML += `
+                            <tr>
+                                <td>${jugada['jugador']}</td>
+                                <td>${jugada['monto']}</td>
+                                <td>${numero}</td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+
+            // Evento Click en boton
+            botonCargarJugada.addEventListener("click", function(event){
+                event.preventDefault();
+
+                // Llamar a funcion de realizar jugada
+                realizarJugada(
+                    nombreFormulario.value,
+                    parseInt(montoFormulario.value),
+                    parseInt(numeroFormulario.value)
+                );
+
+                // Limpiar inputs
+                nombreFormulario.value = '';
+                montoFormulario.value = '';
+                numeroFormulario.value = '';
+
+                // Dibujar tabla de jugadas
+                dibujarJugadas();
+            });
+        </script>
+
+    </body>
+</html>
